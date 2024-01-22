@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\ShopItems;
 use App\Repository\ShopItemsRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,14 +30,19 @@ class IndexController extends AbstractController
     }
 
     #[Route('/shop/item/{id<\d+>}', name: 'app_shopItem')]
-
-    public function shopItem(int $id): Response
+    public function shopItem(int $id, ShopItemsRepository $itemsRepository): Response
     {
+        $shopItem = $itemsRepository->find($id);
+
+        if (!$shopItem) {
+            throw $this->createNotFoundException('Товар не найден');
+        }
+
         return $this->render('index/shopItem.html.twig', [
-            'title' => 'SHOP ITEM' . $id,
-            'description' => 'desc',
-            'price' => '10000',
-            'id' => $id
+            'title' => 'SHOP ITEM ' . $id,
+            'description' => $shopItem->getDefcription(),
+            'price' => $shopItem->getPrice(),
+            // Другие свойства сущности, которые вы хотите передать в шаблон
         ]);
     }
 
@@ -49,4 +53,7 @@ class IndexController extends AbstractController
             'title' => 'SHOP CART',
         ]);
     }
+
+    
 }
+
