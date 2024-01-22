@@ -42,6 +42,7 @@ class IndexController extends AbstractController
             'title' => 'SHOP ITEM ' . $id,
             'description' => $shopItem->getDefcription(),
             'price' => $shopItem->getPrice(),
+            'id' => $id
             // Другие свойства сущности, которые вы хотите передать в шаблон
         ]);
     }
@@ -54,6 +55,5 @@ class IndexController extends AbstractController
         ]);
     }
 
-    
-}
 
+}
