@@ -19,24 +19,25 @@
         <h1>{{ title }}</h1>
         <hr>
 
-        <div class="col-md-4">
-            <a href="#" class="itemClass">
-                <div class="card mb-4 shadow-sm">
-                    <img src="{{ asset('images/1.jpg') }}" class="bd-placeholder-img card-img-top" width="100%" height="225" alt="Placeholder: Thumbnail">
+        {% set sum = 0 %}
+        {% for item in items %}
+        <div class="col-md-12">
+                <div class="card mb-12 shadow-sm">
                     <!-- Здесь могут быть ваши изображения или другой контент -->
-                    </svg>
-
                     <div class="card-body">
-                        <p class="card-text">КОРОЧЕ ЭТО ВСЕ ФИГНЯ, НАДО ДОРАБОТАТЬ</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <!-- Здесь могут быть дополнительные элементы управления -->
-                            </div>
-                            <small class="text-muted">9 mins</small>
+                        <h4>{{ item.shopItem.title }}</h4>
+                        <p class="card-text">{{ item.ShopItem.defcription }}</p>
+                        <h5>{{ item.shopItem.price }} руб</h5>
+                        {% set sum = sum + item.shopItem.price %}
                         </div>
                     </div>
                 </div>
             </a>
         </div>
-    </div>
+        {% endfor %}
+
+    <hr>
+    <h4>Итого: {{ sum }}</h4>
+    
+</div>
 {% endblock %}

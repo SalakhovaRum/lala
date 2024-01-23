@@ -2,12 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\ShopCart;  // Добавьте этот use для ShopCart
+use App\Entity\ShopCart;
+use App\Repository\ShopCartRepository;
 use App\Repository\ShopItemsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface; // Добавьте этот use для SessionInterface
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
@@ -62,12 +63,16 @@ class IndexController extends AbstractController
     }
 
     #[Route('/shop/cart', name: 'app_shopCart')]
-    public function shopCart(): Response
+    public function shopCart(ShopCartRepository $cartRepository): Response
     {
+        $items = $cartRepository->findAll();  // Получаем все товары из корзины без учета сессии
+
         return $this->render('index/shopCart.html.twig', [
-            'title' => 'SHOP CART',
+            'title' => 'Корзина',
+            'items' => $items,
         ]);
     }
+
 
     #[Route('/shop/cart/add/{id<\d+>}/{sessionId}', name: 'app_shopCartAdd', requirements: ['sessionId' => '.+'])]
     public function shopCartAdd(int $id, string $sessionId): Response
@@ -95,7 +100,7 @@ class IndexController extends AbstractController
 
         $this->entityManager->flush();
 
-        return $this->redirectToRoute('app_shopItem', ['id' => $id]);
+        // После добавления товара в корзину, перенаправляем на страницу корзины
+        return $this->redirectToRoute('app_shopCart');
     }
-
 }
