@@ -15,7 +15,7 @@
             <div class="col p-4 d-flex flex-column position-static">
                 <p class="mb-auto">{{ description }}</p>
                 <h3 class="mb-1">{{ price }} рублей</h3>
-                <a href="{{ path('app_shopCart') }}" class="btn btn-success mt-2" style="width: 200px">Добавить в корзину</a>
+                <a href="{{ path('app_shopCartAdd', {'id': shopItem.id, 'sessionId': sessionId ? sessionId : 'default_value'}) }}" class="btn btn-success mt-2" style="width: 200px">Добавить в корзину</a>
             </div>
         </div>
     </div>

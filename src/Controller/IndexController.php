@@ -2,14 +2,25 @@
 
 namespace App\Controller;
 
-use App\Entity\ShopItems;
+use App\Entity\ShopCart;  // Добавьте этот use для ShopCart
 use App\Repository\ShopItemsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface; // Добавьте этот use для SessionInterface
 use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
 {
+    private $entityManager;
+    private $itemsRepository;
+
+    public function __construct(EntityManagerInterface $entityManager, ShopItemsRepository $itemsRepository)
+    {
+        $this->entityManager = $entityManager;
+        $this->itemsRepository = $itemsRepository;
+    }
+
     #[Route('/', name: 'app_index')]
     public function index(): Response
     {
@@ -19,31 +30,34 @@ class IndexController extends AbstractController
     }
 
     #[Route('/shop/list', name: 'app_shopList')]
-    public function shopList(ShopItemsRepository $itemsRepository): Response
+    public function shopList(): Response
     {
-        $items = $itemsRepository->findAll();
+        $items = $this->itemsRepository->findAll();
 
         return $this->render('index/shopList.html.twig', [
             'title' => 'SHOP LIST',
-            'items' => $items
+            'items' => $items,
         ]);
     }
 
     #[Route('/shop/item/{id<\d+>}', name: 'app_shopItem')]
-    public function shopItem(int $id, ShopItemsRepository $itemsRepository): Response
+    public function shopItem(int $id, SessionInterface $session): Response
     {
-        $shopItem = $itemsRepository->find($id);
+        $shopItem = $this->itemsRepository->find($id);
 
         if (!$shopItem) {
             throw $this->createNotFoundException('Товар не найден');
         }
 
+        $sessionId = $session->getId();
+
         return $this->render('index/shopItem.html.twig', [
             'title' => 'SHOP ITEM ' . $id,
             'description' => $shopItem->getDefcription(),
             'price' => $shopItem->getPrice(),
-            'id' => $id
-            // Другие свойства сущности, которые вы хотите передать в шаблон
+            'id' => $id,
+            'sessionId' => $sessionId,
+            'shopItem' => $shopItem,
         ]);
     }
 
@@ -55,5 +69,33 @@ class IndexController extends AbstractController
         ]);
     }
 
+    #[Route('/shop/cart/add/{id<\d+>}/{sessionId}', name: 'app_shopCartAdd', requirements: ['sessionId' => '.+'])]
+    public function shopCartAdd(int $id, string $sessionId): Response
+    {
+        $shopItem = $this->itemsRepository->find($id);
+
+        if (!$shopItem) {
+            throw $this->createNotFoundException('Товар не найден');
+        }
+
+        $existingCartItem = $this->entityManager->getRepository(ShopCart::class)->findOneBy([
+            'shopItem' => $shopItem,
+            'sessionId' => $sessionId,
+        ]);
+
+        if ($existingCartItem) {
+            $existingCartItem->setCount($existingCartItem->getCount() + 1);
+        } else {
+            $shopCart = new ShopCart();
+            $shopCart->setShopItem($shopItem);
+            $shopCart->setCount(1);
+            $shopCart->setSessionId($sessionId);
+            $this->entityManager->persist($shopCart);
+        }
+
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('app_shopItem', ['id' => $id]);
+    }
 
 }
