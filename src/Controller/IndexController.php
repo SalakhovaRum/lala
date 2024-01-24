@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\ShopCart;
 use App\Repository\ShopCartRepository;
 use App\Repository\ShopItemsRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -92,4 +93,39 @@ class IndexController extends AbstractController
         // После добавления товара в корзину, перенаправляем на страницу корзины
         return $this->redirectToRoute('app_shopCart');
     }
+//    #[Route('/shop/order', name: 'app_shopOrder')]
+//    public function shopOrder(Request $request, EntityManagerInterface $em): Response
+//    {
+//
+//        // just setup a fresh $task object (remove the example data)
+//        $shopOrder = new ShopOrder();
+//
+//        $form = $this->createForm(OrderFormType::class, $shopOrder);
+//
+//        $form->handleRequest($request);
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $shopOrder = $form->getData();
+//
+//            if ($shopOrder instanceof ShopOrder) {
+//                $sessionId = $this->session->getId();
+//                $shopOrder->setStatus(ShopOrder::STATUS_NEW_ORDER);
+//                $shopOrder->setSessionId($sessionId);
+//                $em->persist($shopOrder);
+//                $em->flush();
+//                //session_regenerate_id
+//                $this->session->migrate();
+//            }
+//
+//            return $this->redirectToRoute('index');
+//        }
+//
+//
+//        return $this->render(
+//            'index/shopOrder.html.twig',
+//            [
+//                'title' => 'Оформление заказа',
+//                'form' => $form->createView(),
+//            ]
+//        );
+//    }
 }
