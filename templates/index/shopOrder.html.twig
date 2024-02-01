@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello IndexController!{% endblock %}
+{% block title %}Оформление заказа{% endblock %}
 
 {% block body %}
     <div class="example-wrapper">
@@ -9,6 +9,19 @@
 
         {{ form_start(form) }}
         {{ form_widget(form) }}
+{#        <button type="submit" class="btn btn-primary">Сохранить</button>#}
         {{ form_end(form) }}
+
+        {% if orderPlaced %}
+            <div class="alert alert-success" role="alert">
+                Заказ успешно оформлен! Спасибо за покупку.
+            </div>
+            <script>
+                // Перенаправляем на главную страницу через 2 секунды (или любой другой необходимый интервал)
+                setTimeout(function () {
+                    window.location.href = "{{ path('app_index') }}";
+                }, 2000);
+            </script>
+        {% endif %}
     </div>
 {% endblock %}

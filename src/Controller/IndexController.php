@@ -105,6 +105,8 @@ class IndexController extends AbstractController
 
         $form = $this->createForm(OrderFormType::class, $shopOrder);
 
+        $orderPlaced = false; // Инициализируем флаг
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $shopOrder = $form->getData();
@@ -116,9 +118,9 @@ class IndexController extends AbstractController
                 $em->persist($shopOrder);
                 $em->flush();
                 $session->migrate();
-            }
 
-            return $this->redirectToRoute('app_index');
+                $orderPlaced = true; // Устанавливаем флаг, если заказ успешно оформлен
+            }
         }
 
         return $this->render(
@@ -126,7 +128,9 @@ class IndexController extends AbstractController
             [
                 'title' => 'Оформление заказа',
                 'form' => $form->createView(),
+                'orderPlaced' => $orderPlaced, // Передаем флаг в шаблон
             ]
         );
     }
+
 }

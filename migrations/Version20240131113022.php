@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240122110721 extends AbstractMigration
+final class Version20240131113022 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -25,7 +25,7 @@ final class Version20240122110721 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE shop_order_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE shop_cart (id INT NOT NULL, shop_item_id INT NOT NULL, session_id VARCHAR(255) NOT NULL, count INT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_CA516ECC115C1274 ON shop_cart (shop_item_id)');
-        $this->addSql('CREATE TABLE shop_items (id INT NOT NULL, price VARCHAR(255) NOT NULL, title VARCHAR(255) NOT NULL, defcription TEXT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE shop_items (id INT NOT NULL, price INT NOT NULL, title VARCHAR(255) NOT NULL, defcription TEXT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE shop_order (id INT NOT NULL, session_id VARCHAR(255) NOT NULL, status INT NOT NULL, user_name VARCHAR(255) NOT NULL, user_email VARCHAR(255) NOT NULL, user_phone VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE messenger_messages (id BIGSERIAL NOT NULL, body TEXT NOT NULL, headers TEXT NOT NULL, queue_name VARCHAR(190) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, available_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, delivered_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_75EA56E0FB7336F0 ON messenger_messages (queue_name)');
