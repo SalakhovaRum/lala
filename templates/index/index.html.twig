@@ -1,21 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Вы как-то оказались тут{% endblock %}
+{% block title %}Новый Заголовок{% endblock %}
 
 {% block body %}
 
-    <div class="example-wrapper">
-        <h1>Вы как-то оказались тут</h1>
-        <hr>
-
-        <section class="jumbotron text-center">
-            <div class="container">
-                <h1>Всем Здравствуйте!</h1>
-                <p class="lead text-muted">Здесь вы можете купить разные товары</p>
-                <p>
-                    <a href="{{ path('app_shopList') }}" class="btn btn-primary my-2">Перейти к покупкам!</a>
-                </p>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1 class="display-4">Добро пожаловать в Наш магазин!</h1>
+                <hr class="my-4">
             </div>
-        </section>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-8 offset-md-2 text-center">
+                <div class="jumbotron bg-light p-5 rounded">
+                    <h1 class="display-5 text-info">Приветствуем вас!</h1>
+                    <p class="lead">Погрузитесь в удивительный мир разнообразных товаров, которые мы предлагаем. Уверены, вы найдете то, что ищете.</p>
+                    <p class="mt-4">
+                        <a href="{{ path('app_shopList') }}" class="btn btn-primary btn-lg">Перейти к покупкам!</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
+
 {% endblock %}
