@@ -1,5 +1,7 @@
 <?php
 
+// src/Form/OrderFormType.php
+
 namespace App\Form;
 
 use App\Entity\ShopOrder;
@@ -10,6 +12,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class OrderFormType extends AbstractType
 {
@@ -23,13 +28,28 @@ class OrderFormType extends AbstractType
                 TextType::class,
                 [
                     'label' => 'Имя',
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'Введите ваше имя',
+                        ]),
+                        new Length([
+                            'min' => 2,
+                            'minMessage' => 'Имя должно содержать минимум {{ limit }} символа',
+                        ]),
+                    ],
                 ]
             )
             ->add(
                 'userEmail',
                 EmailType::class,
                 [
-                    'label' => 'email',
+                    'label' => 'Email',
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'Введите ваш email',
+                        ]),
+                        // здесь можете добавить другие ограничения для email, если необходимо
+                    ],
                 ]
             )
             ->add(
@@ -37,6 +57,15 @@ class OrderFormType extends AbstractType
                 TextType::class,
                 [
                     'label' => 'Телефон',
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'Введите ваш телефон',
+                        ]),
+                        new Regex([
+                            'pattern' => '/^8\d{10}$/',
+                            'message' => 'Телефонный номер должен начинаться с 8 и содержать 11 цифр',
+                        ]),
+                    ],
                 ]
             )
             ->add(
