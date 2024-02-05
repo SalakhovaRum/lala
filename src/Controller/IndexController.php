@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\ShopCart;
+use Psr\Log\LoggerInterface;
 use App\Entity\ShopOrder;
 use App\Form\OrderFormType;
 use App\Repository\ShopCartRepository;
@@ -51,8 +52,10 @@ class IndexController extends AbstractController
             throw $this->createNotFoundException('Товар не найден');
         }
         $sessionId = $session->getId();
+
+        // Используем метод getTitle() для получения названия товара
         return $this->render('index/shopItem.html.twig', [
-            'title' => 'SHOP ITEM ' . $id,
+            'title' => $shopItem->getTitle(),
             'description' => $shopItem->getDefcription(),
             'price' => $shopItem->getPrice(),
             'id' => $id,
@@ -60,6 +63,9 @@ class IndexController extends AbstractController
             'shopItem' => $shopItem,
         ]);
     }
+
+
+
 
     #[Route('/shop/cart', name: 'app_shopCart')]
     public function shopCart(ShopCartRepository $cartRepository): Response
@@ -131,6 +137,47 @@ class IndexController extends AbstractController
                 'orderPlaced' => $orderPlaced, // Передаем флаг в шаблон
             ]
         );
+    }
+
+    // ...
+
+    #[Route('/shop/cart/remove/{id<\d+>}/{sessionId}', name: 'app_shopCartRemove', requirements: ['sessionId' => '.+'])]
+    public function shopCartRemove(int $id, string $sessionId, LoggerInterface $logger): Response
+    {
+        $logger->info('Debugging...');
+
+        $shopItem = $this->itemsRepository->find($id);
+        if (!$shopItem) {
+            throw $this->createNotFoundException('Товар не найден');
+        }
+
+        $existingCartItem = $this->entityManager->getRepository(ShopCart::class)->findOneBy([
+            'shopItem' => $shopItem,
+            'sessionId' => $sessionId,
+        ]);
+
+        if ($existingCartItem) {
+            $logger->info('Existing cart item found. Count before: ' . $existingCartItem->getCount());
+
+            if ($existingCartItem->getCount() > 1) {
+                $existingCartItem->setCount($existingCartItem->getCount() - 1);
+            } else {
+                $this->entityManager->remove($existingCartItem);
+            }
+
+            $this->entityManager->flush();
+
+            $logger->info('Count after: ' . $existingCartItem->getCount());
+        } else {
+            $logger->info('No existing cart item found for product ' . $id . ' and session ' . $sessionId);
+        }
+
+        // После изменения базы данных, получим все товары в корзине
+        $itemsInCart = $this->entityManager->getRepository(ShopCart::class)->findBy(['sessionId' => $sessionId]);
+
+        $logger->info('Items in cart after removal: ' . count($itemsInCart));
+
+        return $this->redirectToRoute('app_shopCart');
     }
 
 }
