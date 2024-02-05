@@ -7,10 +7,15 @@
         <h1>{{ title }}</h1>
         <hr>
 
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-{#        <button type="submit" class="btn btn-primary">Сохранить</button>#}
-        {{ form_end(form) }}
+        {% if cartEmpty %}
+            <div class="alert alert-danger" role="alert">
+                Добавьте что-нибудь в корзину перед оформлением заказа.
+            </div>
+        {% else %}
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        {% endif %}
 
         {% if orderPlaced %}
             <div class="alert alert-success" role="alert">

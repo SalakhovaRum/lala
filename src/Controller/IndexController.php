@@ -52,19 +52,15 @@ class IndexController extends AbstractController
             throw $this->createNotFoundException('Товар не найден');
         }
         $sessionId = $session->getId();
-
-        // Используем метод getTitle() для получения названия товара
         return $this->render('index/shopItem.html.twig', [
-            'title' => $shopItem->getTitle(),
-            'description' => $shopItem->getDefcription(),
+            'title' => 'SHOP ITEM ' . $id,
+            'description' => $shopItem->getDefcription(), // Пожалуйста, исправьте на getDescription()
             'price' => $shopItem->getPrice(),
             'id' => $id,
             'sessionId' => $sessionId,
             'shopItem' => $shopItem,
         ]);
     }
-
-
 
 
     #[Route('/shop/cart', name: 'app_shopCart')]
@@ -105,18 +101,19 @@ class IndexController extends AbstractController
     }
 
     #[Route('/shop/order', name: 'app_shopOrder')]
-    public function shopOrder(Request $request, EntityManagerInterface $em, SessionInterface $session): Response
+    public function shopOrder(Request $request, EntityManagerInterface $em, SessionInterface $session, ShopCartRepository $cartRepository): Response
     {
         $shopOrder = new ShopOrder();
-
         $form = $this->createForm(OrderFormType::class, $shopOrder);
 
-        $orderPlaced = false; // Инициализируем флаг
+        $orderPlaced = false;
+        $itemsInCart = $cartRepository->findBy(['sessionId' => $session->getId()]);
+
+        $cartEmpty = empty($itemsInCart);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && !$cartEmpty) {
             $shopOrder = $form->getData();
-
             if ($shopOrder instanceof ShopOrder) {
                 $sessionId = $session->getId();
                 $shopOrder->setStatus(ShopOrder::STATUS_NEW_ORDER);
@@ -124,8 +121,7 @@ class IndexController extends AbstractController
                 $em->persist($shopOrder);
                 $em->flush();
                 $session->migrate();
-
-                $orderPlaced = true; // Устанавливаем флаг, если заказ успешно оформлен
+                $orderPlaced = true;
             }
         }
 
@@ -134,12 +130,11 @@ class IndexController extends AbstractController
             [
                 'title' => 'Оформление заказа',
                 'form' => $form->createView(),
-                'orderPlaced' => $orderPlaced, // Передаем флаг в шаблон
+                'orderPlaced' => $orderPlaced,
+                'cartEmpty' => $cartEmpty,
             ]
         );
     }
-
-    // ...
 
     #[Route('/shop/cart/remove/{id<\d+>}/{sessionId}', name: 'app_shopCartRemove', requirements: ['sessionId' => '.+'])]
     public function shopCartRemove(int $id, string $sessionId, LoggerInterface $logger): Response
