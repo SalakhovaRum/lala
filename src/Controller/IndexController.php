@@ -53,7 +53,7 @@ class IndexController extends AbstractController
         }
         $sessionId = $session->getId();
         return $this->render('index/shopItem.html.twig', [
-            'title' => 'SHOP ITEM ' . $id,
+            'title' => $shopItem->getTitle(),
             'description' => $shopItem->getDefcription(), // Пожалуйста, исправьте на getDescription()
             'price' => $shopItem->getPrice(),
             'id' => $id,
