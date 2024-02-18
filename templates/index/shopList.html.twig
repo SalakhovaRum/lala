@@ -2,18 +2,12 @@
 
 {% block title %}Магазин{% endblock %}
 
-{% block body %}
-    <style>
-        .itemClass {
-            text-decoration: none;
-            color: #222222;
-        }
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+{% endblock %}
 
-        .itemClass:hover {
-            text-decoration: none;
-            color: #222222;
-        }
-    </style>
+{% block body %}
     <div class="example-wrapper">
         <h1>Наши товары</h1>
         <hr>

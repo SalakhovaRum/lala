@@ -11,58 +11,9 @@
     <!-- Font Awesome CSS (или подключите свои иконочные шрифты) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofpXAgYdeR/wvfvDpjOrGjSmKt9P" crossorigin="anonymous">
 
-    {% block stylesheets %}
-        <style>
-            body {
-                background-color: #e0e0e0;
-            }
+    <!-- Подключение CSS -->
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
-            .navbar {
-                background-color: #706e6e;
-            }
-
-            .navbar-dark .navbar-toggler-icon {
-                background-color: #343a40;
-            }
-
-            .navbar-dark .navbar-brand {
-                color: #ffffff;
-            }
-
-            .navbar-dark .navbar-nav .nav-link {
-                color: #ffffff;
-            }
-
-            .navbar-dark .navbar-nav .nav-item.active .nav-link {
-                color: #ffffff;
-            }
-
-            .btn-outline-success {
-                color: #28a745;
-                border-color: #28a745;
-            }
-
-            .btn-outline-success:hover {
-                color: #ffffff;
-                background-color: #28a745;
-            }
-
-            /* Стили для блока контактов и соц. сетей */
-            .contact {
-                margin-top: 20px;
-                text-align: center;
-            }
-
-            .contact span {
-                margin-right: 15px;
-            }
-
-            .socials a {
-                margin-right: 10px;
-                color: #28a745;
-            }
-        </style>
-    {% endblock %}
 </head>
 
 <body>
