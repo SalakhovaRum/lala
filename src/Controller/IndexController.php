@@ -200,4 +200,18 @@ class IndexController extends AbstractController
         return $this->redirectToRoute('app_shopCart');
     }
 
+    #[Route('/shop/search', name: 'search_results')]
+    public function searchResults(Request $request): Response
+    {
+        $query = $request->query->get('query');
+
+        // Здесь выполните поиск в базе данных по $query
+        $results = $this->itemsRepository->findBySearchQuery($query);
+
+        return $this->render('index/search_results.html.twig', [
+            'results' => $results,
+            'query' => $query,
+        ]);
+    }
+
 }

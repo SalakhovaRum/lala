@@ -1,25 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Магазин{% endblock %}
+{% block title %}Результаты поиска{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}"> {# Используем тот же CSS файл #}
 {% endblock %}
-
 
 {% block body %}
     <div class="example-wrapper">
-        <h1>Наши товары</h1>
+        <h1>Результаты поиска для "{{ query }}"</h1>
         <hr>
 
-        <form action="{{ path('search_results') }}" method="GET" class="search-form">
-            <input type="text" name="query" placeholder="Поиск..." style="width: 80%;"> <!-- Установка ширины для инпута, если нужно -->
-            <button type="submit">Искать</button>
-        </form>
-
         <div class="row">
-            {% for item in items %}
+            {% for item in results %}
                 <div class="col-md-4">
                     <a href="{{ path('app_shopItem', {'id': item.id}) }}" class="itemClass">
                         <div class="card mb-4 shadow-sm">

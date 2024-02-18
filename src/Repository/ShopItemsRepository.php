@@ -45,4 +45,15 @@ class ShopItemsRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+// В ShopItemsRepository.php
+
+    public function findBySearchQuery(string $query): array
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.title LIKE :query OR i.defcription LIKE :query')
+            ->setParameter('query', '%'.$query.'%')
+            ->getQuery()
+            ->getResult();
+    }
+
 }
