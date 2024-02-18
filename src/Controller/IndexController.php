@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use Symfony\Component\Mailer\MailerInterface;
+
+use Symfony\Component\Mime\Email;
 use App\Entity\ShopCart;
 use Psr\Log\LoggerInterface;
 use App\Entity\ShopOrder;
@@ -100,8 +103,10 @@ class IndexController extends AbstractController
         return $this->redirectToRoute('app_shopCart');
     }
 
+
+
     #[Route('/shop/order', name: 'app_shopOrder')]
-    public function shopOrder(Request $request, EntityManagerInterface $em, SessionInterface $session, ShopCartRepository $cartRepository): Response
+    public function shopOrder(Request $request, EntityManagerInterface $em, SessionInterface $session, ShopCartRepository $cartRepository, MailerInterface $mailer, LoggerInterface $logger): Response
     {
         $shopOrder = new ShopOrder();
         $form = $this->createForm(OrderFormType::class, $shopOrder);
@@ -122,6 +127,25 @@ class IndexController extends AbstractController
                 $em->flush();
                 $session->migrate();
                 $orderPlaced = true;
+
+                // Логируем перед отправкой письма
+                $logger->info('Пытаюсь отправить письмо на адрес: ' . $shopOrder->getUserEmail());
+
+                // Отправляем письмо на почту
+                $recipientEmail = $shopOrder->getUserEmail(); // Вот это исправленный метод
+                $subject = 'Ваш заказ успешно оформлен';
+                $body = 'Спасибо за ваш заказ. Мы свяжемся с вами в ближайшее время.';
+
+                $email = (new Email())
+                    ->from('littleangel03@mail.ru')
+                    ->to($recipientEmail)
+                    ->subject($subject)
+                    ->text($body);
+
+                $mailer->send($email);
+
+                // Логируем после отправки письма
+                $logger->info('Письмо успешно отправлено на адрес: ' . $shopOrder->getUserEmail());
             }
         }
 
@@ -135,6 +159,7 @@ class IndexController extends AbstractController
             ]
         );
     }
+
 
     #[Route('/shop/cart/remove/{id<\d+>}/{sessionId}', name: 'app_shopCartRemove', requirements: ['sessionId' => '.+'])]
     public function shopCartRemove(int $id, string $sessionId, LoggerInterface $logger): Response
