@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }} - Интернет-магазин@RUMIYA{% endblock %}
+
+{% block body %}
+    <h1>{{ title }}</h1>
+    {% if orders is not empty %}
+        <ul>
+            {% for order in orders %}
+                <li>{{ order.id }} - {{ order.status }} - {{ order.total }}</li>
+                <!-- Здесь можете добавить дополнительную информацию о заказе -->
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>У вас пока нет заказов.</p>
+    {% endif %}
+{% endblock %}
