@@ -7,14 +7,13 @@
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 {% endblock %}
 
-
 {% block body %}
     <div class="example-wrapper">
         <h1>Наши товары</h1>
         <hr>
 
         <form action="{{ path('search_results') }}" method="GET" class="search-form">
-            <input type="text" name="query" placeholder="Поиск..." style="width: 80%;"> <!-- Установка ширины для инпута, если нужно -->
+            <input type="text" name="query" placeholder="Поиск..." style="width: 80%;">
             <button type="submit">Искать</button>
         </form>
 
@@ -23,7 +22,7 @@
                 <div class="col-md-4">
                     <a href="{{ path('app_shopItem', {'id': item.id}) }}" class="itemClass">
                         <div class="card mb-4 shadow-sm">
-                            <img src="{{ asset('images/lala.jpg') }}" class="bd-placeholder-img card-img-top" width="100%" height="225" alt="Thumbnail Image">
+                            <img src="{{ asset('images/' ~ item.id ~ '/image.jpg') }}" class="bd-placeholder-img card-img-top" width="100%" height="225" alt="Картинка не найдена">
                             <div class="card-body">
                                 <h4>{{ item.title }}</h4>
                                 <p class="card-text">{{ item.defcription }}</p>

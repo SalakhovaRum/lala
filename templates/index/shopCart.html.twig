@@ -7,24 +7,28 @@
 
         {% set sum = 0 %}
         {% for item in items %}
-            <div class="col-md-12">
-                <div class="card mb-12 shadow-sm">
-                    <!-- Здесь могут быть ваши изображения или другой контент -->
-                    <div class="card-body">
-                        <h4>{{ item.shopItem.title }}</h4>
-                        <p class="card-text">{{ item.shopItem.defcription }}</p>
-                        <h5>{{ item.shopItem.price }} руб</h5>
-                        <p>Количество: {{ item.count }}</p> {# Добавленная строка #}
-                        {% set sum = sum + item.shopItem.price * item.count %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-12 shadow-sm">
+                        <img src="{{ asset('images/' ~ item.shopItem.id ~ '/image.jpg') }}" class="bd-placeholder-img card-img-top" alt="Картинка не найдена">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-12 shadow-sm">
+                        <div class="card-body">
+                            <h4>{{ item.shopItem.title }}</h4>
+                            <p class="card-text">{{ item.shopItem.defcription }}</p>
+                            <h5>{{ item.shopItem.price }} руб</h5>
+                            <p>Количество: {{ item.count }}</p>
+                            {% set sum = sum + item.shopItem.price * item.count %}
+                        </div>
                     </div>
                 </div>
             </div>
-            </a>
+            <hr>
         {% endfor %}
 
-        <hr>
         <h4>Итого: {{ sum }} рублей к оплате</h4>
         <a href="{{ path('app_shopOrder') }}" class="float-right btn btn-success mt-2">Оформить заказ</a>
-
     </div>
 {% endblock %}
