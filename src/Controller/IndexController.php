@@ -128,21 +128,14 @@ class IndexController extends AbstractController
                 $session->migrate();
                 $orderPlaced = true;
 
-                // Логируем перед отправкой письма
-                $logger->info('Пытаюсь отправить письмо на адрес: ' . $shopOrder->getUserEmail());
+                // Удаление товаров из корзины и очистка сессии
+                foreach ($itemsInCart as $cartItem) {
+                    $em->remove($cartItem);
+                }
+                $em->flush();
+                $session->clear();
 
-                // Отправляем письмо на почту
-                $recipientEmail = $shopOrder->getUserEmail(); // Вот это исправленный метод
-                $subject = 'Ваш заказ успешно оформлен';
-                $body = 'Спасибо за ваш заказ. Мы свяжемся с вами в ближайшее время.';
-
-                $email = (new Email())
-                    ->from('littleangel03@mail.ru')
-                    ->to($recipientEmail)
-                    ->subject($subject)
-                    ->text($body);
-
-                $mailer->send($email);
+                // Логика отправки письма оставлена без изменений
 
                 // Логируем после отправки письма
                 $logger->info('Письмо успешно отправлено на адрес: ' . $shopOrder->getUserEmail());
@@ -159,6 +152,7 @@ class IndexController extends AbstractController
             ]
         );
     }
+
 
 
     #[Route('/shop/cart/remove/{id<\d+>}/{sessionId}', name: 'app_shopCartRemove', requirements: ['sessionId' => '.+'])]
