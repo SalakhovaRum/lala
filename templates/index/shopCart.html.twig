@@ -10,13 +10,17 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="card mb-12 shadow-sm">
-                        <img src="{{ asset('images/' ~ item.shopItem.id ~ '/image.jpg') }}" class="bd-placeholder-img card-img-top" alt="Картинка не найдена">
+                        <a href="{{ path('app_shopItem', {'id': item.shopItem.id}) }}" class="itemClass"> {# Добавляем ссылку на страницу товара #}
+                            <img src="{{ asset('images/' ~ item.shopItem.id ~ '/image.jpg') }}" class="bd-placeholder-img card-img-top" alt="Картинка не найдена">
+                        </a>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card mb-12 shadow-sm">
                         <div class="card-body">
-                            <h4>{{ item.shopItem.title }}</h4>
+                            <a href="{{ path('app_shopItem', {'id': item.shopItem.id}) }}" class="itemClass"> {# Добавляем ссылку на страницу товара #}
+                                <h4>{{ item.shopItem.title }}</h4>
+                            </a>
                             <p class="card-text">{{ item.shopItem.defcription }}</p>
                             <h5>{{ item.shopItem.price }} руб</h5>
                             <p>Количество: {{ item.count }}</p>
@@ -28,7 +32,12 @@
             <hr>
         {% endfor %}
 
-        <h4>Итого: {{ sum }} рублей к оплате</h4>
-        <a href="{{ path('app_shopOrder') }}" class="float-right btn btn-success mt-2">Оформить заказ</a>
+        <div class="row">
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+                <h4>Итого: {{ sum }} рублей к оплате</h4>
+                <a href="{{ path('app_shopOrder') }}" class="btn btn-success btn-block mt-2">Оформить заказ</a> {# Добавлен класс btn-block для размещения кнопки на всю ширину #}
+            </div>
+        </div>
     </div>
 {% endblock %}
